@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Обновление</title>
+</head>
+    <body>
+    <h2>Редактирование параметра:</h2>
+    <form name="mdata" method="post" action="/update">
+        <#list content?keys as key>
+            <p>id meteo: <input type="text" name="id" value="${content[key].getMeteo_station_id()}">
+            <p>Дата съёма: <input type="text" name="date" value="${content[key].toStringData()}">
+            <p>Температ.: <input type="text" name="temper" value="${content[key].getTemper()}">
+            <p>Атосф. Давл.: <input type="text" name="press" value="${content[key].getPressure()}">
+            <p>Направление ветра: <input type="text" name="wind_dir" value="${content[key].getWind_direction()}">
+            <p>Скорость ветра: <input type="text" name="wind_speed" value="${content[key].getWind_speed()}">
+        </#list>
+        <p><input type="submit" value="Обновить">
+    </form>
+
+    </body>
+</html>
+

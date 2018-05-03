@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Метео данные</title>
+</head>
+    <body>
+    <h2>Метео данные</h2>
+
+    <form name="mdata" method="post" action="/">
+        <p>id meteo: <input type="text" name="idMeteo">
+        дата: <input type="month" name="calendar">
+        <input type="submit" name="show" value="Показать">
+        <input type="submit" name="downlod_excel" value="Скачать Excel">
+        <input type="submit" name="download_json" value="Скачать JSON">
+    </form>
+
+        <table border="1">
+            <caption >Таблица параметров метеостанций</caption>
+            <tr>
+                <th>Идентификатор метеост.</th>
+                <th>Дата съёма</th>
+                <th>Температура</th>
+                <th>Атмосф. давл.</th>
+                <th>Направление ветра</th>
+                <th>Скорость ветра</th>
+                <th>Редактировать</th>
+            </tr>
+            <#list content?keys as key>
+                <tr>
+                    <td>${content[key].getMeteo_station_id()}</td>
+                    <td>${content[key].toStringData()}</td>
+                    <td>${content[key].getTemper()}</td>
+                    <td>${content[key].getPressure()}</td>
+                    <td>${content[key].getWind_direction()}</td>
+                    <td>${content[key].getWind_speed()}</td>
+                    <td><a href="/edit?id=${content[key].getMeteo_station_id()}&date=${content[key].toStringData()}">Edit</a>
+                        <a href="/delete?id=${content[key].getMeteo_station_id()}&date=${content[key].toStringData()}">Delete</a> </td>
+                </tr>
+            </#list>
+        </table>
+
+
+
+    </body>
+</html>
+
