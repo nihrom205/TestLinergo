@@ -1,6 +1,7 @@
 package dbService.view;
 
 import dbService.model.MeteoUnit;
+import dbService.model.User;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -47,6 +48,26 @@ public class UseDao {
             e.printStackTrace();
         }
         return storageMeteo;
+    }
+
+    public Map viewUser(ResultSet rs) {
+        Map<String, User> storeAccount = new HashMap<>();
+        long count = 0;
+        try {
+            while (rs.next()) {
+                long id = Long.valueOf(rs.getString("id"));
+                String login = rs.getString("login");
+                String pass = rs.getString("pass");
+                String session = rs.getString("session_usr");
+                String template = rs.getString("template");
+                long meteo_station_id = Long.valueOf(rs.getString("meteo_station_id"));
+
+                storeAccount.put("account", new User(id, login, pass, session, template, meteo_station_id));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return storeAccount;
     }
 
     /**

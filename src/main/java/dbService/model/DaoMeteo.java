@@ -234,4 +234,26 @@ public class DaoMeteo {
         return rs;
     }
 
+    /**
+     * Метод запрашивает из БД логин и пароль ползователя
+     * @param login логин
+     * @param pass пароль
+     * @return ResultSet
+     */
+    public ResultSet getLoginAndPass(String login, String pass) {
+        ResultSet rs = null;
+        Statement statement;
+
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("select * from Users where login = \"").append(login).append("\"");
+//        sqlQuery.append("select * from Users where login = \"UserEkb\"");
+
+        try {
+            statement = (Statement) connection.createStatement();
+            rs = statement.executeQuery(sqlQuery.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
 }
