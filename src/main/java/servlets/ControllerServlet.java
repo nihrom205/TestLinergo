@@ -54,6 +54,15 @@ public class ControllerServlet extends HttpServlet {
         String dateStr = req.getParameter("calendar");
         String show = req.getParameter("show");
         String downlod_excel = req.getParameter("downlod_excel");
+        String exit = req.getParameter("exit");
+
+        if (exit != null) {
+            resp.setContentType("text/html;charset=utf-8");
+            daoMeteo.setSessionMeteoId(id);
+            resp.sendRedirect("/");
+            resp.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
         if (show != null) {
             resp.setContentType("text/html;charset=utf-8");

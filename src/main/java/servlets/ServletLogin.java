@@ -26,9 +26,19 @@ public class ServletLogin extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().print(PageGenerator.instance().getPage("login.html", new HashMap<>()));
-        resp.setStatus(HttpServletResponse.SC_OK);
+        String session = req.getSession().getId();
+        String login = req.getParameter("login");
+
+        Map<String, User> map = new UseDao().viewUser(daoMeteo.getUserBySession(session));
+        if (map.isEmpty()) {
+            resp.setContentType("text/html;charset=utf-8");
+            resp.getWriter().print(PageGenerator.instance().getPage("login.html", new HashMap<>()));
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            User user = map.get("account");
+            resp.getWriter().print(PageGenerator.instance().getPage("page.html", new UseDao().viewMeteo(daoMeteo.getIdMonth(user.getMeteo_station_id() + "",""))));
+            resp.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 
     @Override
@@ -36,7 +46,7 @@ public class ServletLogin extends HttpServlet {
         resp.setContentType("text/html;charset=utf-8");
         String login = req.getParameter("login");
         String pass = req.getParameter("pass");
-        Map<String, User> map =  new UseDao().viewUser(daoMeteo.getLoginAndPass(login, pass));
+        Map<String, User> map =  new UseDao().viewUser(daoMeteo.getLoginAndPass(login));
         if (map.isEmpty()) {
             resp.getWriter().print(PageGenerator.instance().getPage("ErrorLogin.html", new HashMap<>()));
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -44,14 +54,11 @@ public class ServletLogin extends HttpServlet {
         } else {
             User user = map.get("account");
             if (pass.equals(user.getPass())) {
+                String session = req.getSession().getId();
+                daoMeteo.setSession(login, session);
                 resp.getWriter().print(PageGenerator.instance().getPage("page.html", new UseDao().viewMeteo(daoMeteo.getIdMonth(user.getMeteo_station_id() + "",""))));
                 resp.setStatus(HttpServletResponse.SC_OK);
             }
-
         }
-
-
-
-
     }
 }

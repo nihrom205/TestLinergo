@@ -47,6 +47,7 @@ public class UseDao {
         }catch(Exception e) {
             e.printStackTrace();
         }
+
         return storageMeteo;
     }
 

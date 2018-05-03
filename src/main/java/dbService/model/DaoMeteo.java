@@ -107,8 +107,8 @@ public class DaoMeteo {
      * @return ResultSet
      */
     public ResultSet getIdMonth(String id, String strDate) {
-        ResultSet rs = null;
-        Statement statement;
+//        ResultSet rs = null;
+//        Statement statement;
         Calendar calendar = null;
         int year;
         int month;
@@ -148,14 +148,14 @@ public class DaoMeteo {
                 append(countDay).
                 append("'");
 
-        try {
-            statement = (Statement) connection.createStatement();
-            rs = statement.executeQuery(sqlQuery.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            statement = (Statement) connection.createStatement();
+//            rs = statement.executeQuery(sqlQuery.toString());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
-        return rs;
+        return execute(sqlQuery.toString());
     }
 
     /**
@@ -164,7 +164,7 @@ public class DaoMeteo {
      * @param date дата
      */
     public void deleteUnit(String id, String date) {
-        Statement statement;
+//        Statement statement;
         StringBuilder strSqlQuery = new StringBuilder();
         strSqlQuery.append("delete from MeteoData where meteo_station_id = ").
                 append(id).
@@ -172,12 +172,13 @@ public class DaoMeteo {
                 append(date).
                 append("')");
 
-        try {
-            statement = (Statement) connection.createStatement();
-            statement.execute(strSqlQuery.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            statement = (Statement) connection.createStatement();
+//            statement.execute();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+        executeUpdate(strSqlQuery.toString());
     }
 
     /**
@@ -186,7 +187,7 @@ public class DaoMeteo {
      * @param date дата
      */
     public void updateUnit(String id, String date, String strTemper, String strPress, String strWind_dir, String strWind_speed) {
-        Statement statement;
+//        Statement statement;
 
         StringBuilder strSqlQuery = new StringBuilder();
         strSqlQuery.append("update MeteoData set meteo_station_id = ").
@@ -199,12 +200,13 @@ public class DaoMeteo {
                 append(id).append(" AND unix_timestamp(read_timestamp) = unix_timestamp('").
                 append(date).append("')");
 
-        try {
-            statement = (Statement) connection.createStatement();
-            statement.execute(strSqlQuery.toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            statement = (Statement) connection.createStatement();
+//            statement.execute(strSqlQuery.toString());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+        executeUpdate(strSqlQuery.toString());
     }
 
     /**
@@ -214,8 +216,8 @@ public class DaoMeteo {
      * @return результат
      */
     public ResultSet getId(String id, String strDate) {
-        ResultSet rs = null;
-        Statement statement;
+//        ResultSet rs = null;
+//        Statement statement;
 
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("select * from MeteoData where meteo_station_id =").
@@ -224,36 +226,101 @@ public class DaoMeteo {
                 append(strDate).
                 append("')");
 
+//        try {
+//            statement = (Statement) connection.createStatement();
+//            rs = statement.executeQuery(sqlQuery.toString());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+
+        return execute(sqlQuery.toString());
+    }
+
+    /**
+     * Метод запрашивает из БД логин
+     * @param login логин
+     * @return ResultSet
+     */
+    public ResultSet getLoginAndPass(String login) {
+//        ResultSet rs = null;
+//        Statement statement;
+
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("select * from Users where login = \"").append(login).append("\"");
+
+//        try {
+//            statement = (Statement) connection.createStatement();
+//            rs = statement.executeQuery(sqlQuery.toString());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+        return execute(sqlQuery.toString());
+    }
+
+    /**
+     * Метод запрашивает из БД сессию.
+     * @param session id сессии
+     * @return результат
+     */
+    public ResultSet getUserBySession(String session) {
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("select * from Users where session_usr = \"").append(session).append("\"");
+
+        return execute(sqlQuery.toString());
+    }
+
+    /**
+     * Метод соохраняет код сессии пользователю.
+     * @param login логин
+     * @param session код сессии
+     */
+    public void setSession(String login, String session) {
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("update Users set session_usr = \"").append(session).append("\" where login = \"").append(login).append("\"");
+
+        executeUpdate(sqlQuery.toString());
+    }
+
+    /**
+     * метод затирает код сессии у ползователя
+     * @param meteoId id
+     */
+    public void setSessionMeteoId(String meteoId) {
+        StringBuilder sqlQuery = new StringBuilder();
+        sqlQuery.append("update Users set session_usr = \"\" where meteo_station_id = ").append(meteoId);
+
+        executeUpdate(sqlQuery.toString());
+    }
+
+    /**
+     * Метод выполнения запросов к БД
+     * @param query запрос к БД
+     * @return результат объект ResultSet
+     */
+    private ResultSet execute (String query) {
+        ResultSet rs = null;
+        Statement statement = null;
+
         try {
             statement = (Statement) connection.createStatement();
-            rs = statement.executeQuery(sqlQuery.toString());
+            rs = statement.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return rs;
     }
 
     /**
-     * Метод запрашивает из БД логин и пароль ползователя
-     * @param login логин
-     * @param pass пароль
-     * @return ResultSet
+     * Метод выполнения запрос к БД
+     * @param query запрос к БД
      */
-    public ResultSet getLoginAndPass(String login, String pass) {
-        ResultSet rs = null;
+    private void executeUpdate(String query) {
         Statement statement;
-
-        StringBuilder sqlQuery = new StringBuilder();
-        sqlQuery.append("select * from Users where login = \"").append(login).append("\"");
-//        sqlQuery.append("select * from Users where login = \"UserEkb\"");
-
         try {
             statement = (Statement) connection.createStatement();
-            rs = statement.executeQuery(sqlQuery.toString());
+            statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rs;
     }
 }
